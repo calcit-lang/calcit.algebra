@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@calcit/procs": "^0.4.36"
+  },
+  "scripts": {
+    "watch-server": "cr --emit-js",
+    "build-server": "yarn webpack && node js-out/bundle.js",
+    "dev-server": "hot=true webpack --watch"
+  },
+  "devDependencies": {
+    "webpack": "^5.54.0",
+    "webpack-cli": "^4.8.0"
+  },
+  "version": "0.0.7"
+}
