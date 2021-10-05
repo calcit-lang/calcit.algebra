@@ -12,18 +12,23 @@
           algebra.match :refer $ checked-match
       :defs $ {}
         |test-match $ quote
-          defn test-match () $ &let
-            pet $ :: animal-class ([] :cat "\"Mew" "\"orange" 6 20)
-            checked-match pet
-                :cat name color age break-times
-                println "\"Cat" name
-              (:dog name color age) (println "\"Dog" name)
-              (:bird name category origin) (println "\"Bird from" origin)
-              (:horse name) (println "\"Horse")
-            checked-match pet
-                :cat name color age break-times
-                println "\"2.. Cat" name
-              _ $ println "\"not cat"
+          defn test-match () $ do
+            testing "\"example 1" $ is
+              =
+                match-pet-1 $ :: animal-class ([] :cat "\"Mew" "\"orange" 6 20)
+                {} (:name "\"Mew") (:color "\"orange") (:age 6) (:color "\"orange") (:bad 20)
+            testing "\"example 1" $ is
+              =
+                match-pet-1 $ :: animal-class ([] :horse "\"Jaky")
+                {} $ :name "\"Jaky"
+            testing "\"example 2" $ is
+              =
+                match-pet-2 $ :: animal-class ([] :cat "\"Mew" "\"orange" 6 20)
+                [] "\"Cat" "\"Mew"
+            testing "\"example 2" $ is
+              =
+                match-pet-2 $ :: animal-class ([] :dog "\"Dou" "\"orange" 6)
+                , "\"not cat"
         |test-maybe $ quote
           deftest test-maybe
             testing |map
@@ -77,6 +82,23 @@
               :horse $ [] :name
         |main! $ quote
           defn main! () $ run-tests
+        |match-pet-1 $ quote
+          defn match-pet-1 (pet)
+            checked-match pet
+                :cat name color age break-times
+                {} (:name name) (:color color) (:age age) (:bad break-times)
+              (:dog name color age)
+                {} (:name name) (:color color) (:age age)
+              (:bird name category origin)
+                {} (:name name) (:category category) (:origin origin)
+              (:horse name)
+                {} $ :name name
+        |match-pet-2 $ quote
+          defn match-pet-2 (pet)
+            checked-match pet
+                :cat name color age break-times
+                [] "\"Cat" name
+              _ "\"not cat"
         |reload! $ quote
           defn reload! () $ run-tests
     |algebra.match $ {}
@@ -106,9 +128,13 @@
                         assert "\"check all rules defined" $ check-definitions (quote ~defined-rules) (:variants klass)
                         &let
                           ~var# $ nth ~boxed# 1
+                          assert "\"expected list for data" $ list? ~var#
+                          if
+                            not $ &map:contains? (:variants klass) (nth ~var# 0)
+                            raise $ str "\"invalid key " (nth ~var# 0) "\" according to " (:variants klass)
                           ~ $ &let
                             code $ build-branching var# patterns
-                            println $ format-to-lisp code
+                            ; println $ format-to-lisp code
                             , code
         |valid-last-pattern? $ quote
           defn valid-last-pattern? (xs)
@@ -117,8 +143,10 @@
               = '_ $ nth xs 0
         |build-indexed-expr $ quote
           defn build-indexed-expr (vars var0 idx code)
-            if (empty? vars) code $ quasiquote
-              &let
+            if (empty? vars) code $ if
+              = '_ $ first vars
+              build-indexed-expr (rest vars) var0 (inc idx) code
+              quasiquote $ &let
                   ~ $ first vars
                   nth ~var0 ~idx
                 ~ $ build-indexed-expr (rest vars) var0 (inc idx) code

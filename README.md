@@ -51,12 +51,19 @@ is $ = (:: maybe-class nil)
     :: maybe-class nil
 ```
 
-`checked-match` macro:
+`checked-match` macro(much slower than `key-match`, not suggested to use):
 
 ```cirru
 ns demo
   :require
     algebra.match :refer $ checked-match
+
+defrecord! animal-class $ :variants
+  {}
+    :cat $ [] :name :color :age :breaks
+    :dog $ [] :name :color :age
+    :bird $ [] :name :category :origin
+    :horse $ [] :name
 
 &let
   pet $ :: animal-class ([] :cat "\"Mew" "\"orange" 6 20)
@@ -65,7 +72,7 @@ ns demo
       println "\"Cat" name
     (:dog name color age)
       println "\"Dog" name
-    (:bird name category origin)
+    (:bird name _ origin)
       println "\"Bird from" origin
     (:horse name)
       println "\"Horse"
