@@ -51,6 +51,30 @@ is $ = (:: maybe-class nil)
     :: maybe-class nil
 ```
 
+`checked-match` macro:
+
+```cirru
+ns demo
+  :require
+    algebra.match :refer $ checked-match
+
+&let
+  pet $ :: animal-class ([] :cat "\"Mew" "\"orange" 6 20)
+  checked-match pet
+    (:cat name color age break-times)
+      println "\"Cat" name
+    (:dog name color age)
+      println "\"Dog" name
+    (:bird name category origin)
+      println "\"Bird from" origin
+    (:horse name)
+      println "\"Horse"
+  checked-match pet
+    (:cat name color age break-times)
+      println "\"2.. Cat" name
+    _ $ println "\"not cat"
+```
+
 _TODO_
 
 ### Workflow
