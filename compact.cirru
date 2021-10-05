@@ -62,7 +62,12 @@
               = "\"ci" $ get-env "\"mode"
               reset! *quit-on-failure? true
             test-maybe
-            test-match
+            in-rust: $ test-match
+        |in-rust: $ quote
+          defmacro in-rust: (code)
+            if
+              = :eval $ &get-calcit-running-mode
+              , code $ quote (println "\"js... skip...")
         |animal-class $ quote
           defrecord! animal-class $ :variants
             {}

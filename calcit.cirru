@@ -749,12 +749,64 @@
                 :by |u0
               |x $ {}
                 :data $ {}
-                  |T $ {} (:text |test-match) (:type :leaf) (:at 1633419634474) (:by |u0)
+                  |D $ {} (:text |in-rust:) (:type :leaf) (:at 1633428550121) (:by |u0)
+                  |T $ {}
+                    :data $ {}
+                      |T $ {} (:text |test-match) (:type :leaf) (:at 1633419634474) (:by |u0)
+                    :type :expr
+                    :at 1633419631898
+                    :by |u0
                 :type :expr
-                :at 1633419631898
+                :at 1633428544113
                 :by |u0
             :type :expr
             :at 1625339970921
+            :by |u0
+          |in-rust: $ {}
+            :data $ {}
+              |T $ {} (:text |defmacro) (:type :leaf) (:at 1633428553516) (:by |u0)
+              |j $ {} (:text |in-rust:) (:type :leaf) (:at 1633428551158) (:by |u0)
+              |r $ {}
+                :data $ {}
+                  |T $ {} (:text |code) (:type :leaf) (:at 1633428554772) (:by |u0)
+                :type :expr
+                :at 1633428551158
+                :by |u0
+              |v $ {}
+                :data $ {}
+                  |T $ {} (:text |if) (:type :leaf) (:at 1633428557279) (:by |u0)
+                  |j $ {}
+                    :data $ {}
+                      |T $ {} (:text |=) (:type :leaf) (:at 1633428562734) (:by |u0)
+                      |j $ {} (:text |:eval) (:type :leaf) (:at 1633428645202) (:by |u0)
+                      |r $ {}
+                        :data $ {}
+                          |T $ {} (:text |&get-calcit-running-mode) (:type :leaf) (:at 1633428643337) (:by |u0)
+                        :type :expr
+                        :at 1633428590545
+                        :by |u0
+                    :type :expr
+                    :at 1633428561998
+                    :by |u0
+                  |r $ {} (:text |code) (:type :leaf) (:at 1633428596455) (:by |u0)
+                  |v $ {}
+                    :data $ {}
+                      |T $ {} (:text |quote) (:type :leaf) (:at 1633428704235) (:by |u0)
+                      |j $ {}
+                        :data $ {}
+                          |T $ {} (:text |println) (:type :leaf) (:at 1633428706989) (:by |u0)
+                          |j $ {} (:text "|\"js... skip...") (:type :leaf) (:at 1633428714208) (:by |u0)
+                        :type :expr
+                        :at 1633428705020
+                        :by |u0
+                    :type :expr
+                    :at 1633428702395
+                    :by |u0
+                :type :expr
+                :at 1633428555440
+                :by |u0
+            :type :expr
+            :at 1633428551158
             :by |u0
           |animal-class $ {}
             :data $ {}
