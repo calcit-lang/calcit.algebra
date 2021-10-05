@@ -62,7 +62,7 @@
               = "\"ci" $ get-env "\"mode"
               reset! *quit-on-failure? true
             test-maybe
-            in-rust: $ test-match
+            test-match
         |in-rust: $ quote
           defmacro in-rust: (code)
             if
@@ -93,50 +93,35 @@
               &let
                 defined-rules $ map patterns first
                 ; println "\"defs" defined-rules
-                quasiquote $ &let (boxed ~x0)
-                  assert "\"expected tuple value" $ tuple? boxed
-                  &let
-                    klass $ nth boxed 0
-                    assert "\"expected class in record" $ record? (nth boxed 0)
-                    assert "\"has variants" $ map? (:variants klass)
-                    assert "\"check all rules defined" $ check-definitions (quote ~defined-rules) (:variants klass)
-                    &let
-                      v $ nth boxed 1
-                      assert "\"expected values in list and has key" $ and (list? v)
-                        keyword? $ nth v 0
-                      &let
-                        key $ first v
-                        &let
-                          rule $ find-matched-pattern key (quote ~patterns)
-                          &pattern-match v rule
-        |&pattern-match $ quote
-          defn &pattern-match (data xs)
-            &let
-              rule $ nth xs 0
-              &let
-                code $ nth xs 1
-                if
-                  not= (count data) (count rule)
-                  raise $ str "\"invalid size: " data "\" " rule
                 &let
-                  values $ rest data
+                  boxed# $ gensym "\"boxed"
                   &let
-                    vars $ rest rule
-                    ; println values vars
-                    eval $ build-let-expr vars values code
-        |valid-pattern? $ quote
-          defn valid-pattern? (xs)
-            and (list? xs)
-              = 2 $ count xs
-              &let
-                rule $ nth xs 0
-                and (list? rule)
-                  keyword? $ nth rule 0
+                    var# $ gensym "\"value"
+                    quasiquote $ &let (~boxed# ~x0)
+                      assert "\"expected tuple value" $ tuple? ~boxed#
+                      &let
+                        klass $ nth ~boxed# 0
+                        assert "\"expected class in record" $ record? (nth ~boxed# 0)
+                        assert "\"has variants" $ map? (:variants klass)
+                        assert "\"check all rules defined" $ check-definitions (quote ~defined-rules) (:variants klass)
+                        &let
+                          ~var# $ nth ~boxed# 1
+                          ~ $ &let
+                            code $ build-branching var# patterns
+                            println $ format-to-lisp code
+                            , code
         |valid-last-pattern? $ quote
           defn valid-last-pattern? (xs)
             and (list? xs)
               = 2 $ count xs
               = '_ $ nth xs 0
+        |build-indexed-expr $ quote
+          defn build-indexed-expr (vars var0 idx code)
+            if (empty? vars) code $ quasiquote
+              &let
+                  ~ $ first vars
+                  nth ~var0 ~idx
+                ~ $ build-indexed-expr (rest vars) var0 (inc idx) code
         |check-definitions $ quote
           defn check-definitions (rules variants) (; println "\"rules" rules) (; println "\"variants" variants)
             if (empty? rules)
@@ -161,18 +146,32 @@
                         raise $ str "\"all variants covered, no need for `_` clause"
                         , true
                       raise "\"expected `_` to be tail of patterns"
-        |find-matched-pattern $ quote
-          defn find-matched-pattern (key patterns) (; println "\"TODO find-matched-pattern" key patterns)
-            if (empty? patterns) nil $ &let
-              p0 $ first patterns
-              if
-                = key $ first (first p0)
-                , p0 $ recur key (rest patterns)
-        |build-let-expr $ quote
-          defn build-let-expr (vars values code)
-            if (empty? vars) code $ [] '&let
-              [] (first vars) (first values)
-              build-let-expr (rest vars) (rest values) code
+        |valid-pattern? $ quote
+          defn valid-pattern? (xs)
+            and (list? xs)
+              = 2 $ count xs
+              &let
+                rule $ nth xs 0
+                and (list? rule)
+                  keyword? $ nth rule 0
+        |build-branching $ quote
+          defn build-branching (var0 patterns)
+            if (empty? patterns)
+              quasiquote $ raise (str "\"unreachable in match for " ~var0)
+              &let
+                p0 $ first patterns
+                &let
+                  rule $ nth p0 0
+                  if (= '_ rule)
+                    if
+                      = 1 $ count patterns
+                      nth p0 1
+                      quote $ raise "\"expected `_` at last rule"
+                    quasiquote $ if
+                      = (nth ~var0 0)
+                        ~ $ nth rule 0
+                      ~ $ build-indexed-expr (rest rule) var0 1 (nth p0 1)
+                      ~ $ build-branching var0 (rest patterns)
     |algebra.maybe $ {}
       :ns $ quote (ns algebra.maybe)
       :defs $ {}

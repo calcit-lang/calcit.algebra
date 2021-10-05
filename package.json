@@ -3,6 +3,7 @@
     "@calcit/procs": "^0.4.36"
   },
   "scripts": {
+    "try-js": "mode=ci cr --emit-js -1 && yarn && yarn webpack && mode=ci node ./js-out/bundle.js",
     "watch-server": "cr --emit-js",
     "build-server": "yarn webpack && node js-out/bundle.js",
     "dev-server": "hot=true webpack --watch"
