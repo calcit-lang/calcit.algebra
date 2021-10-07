@@ -16,7 +16,7 @@
             testing "\"example 1" $ is
               =
                 match-pet-1 $ :: animal-class ([] :cat "\"Mew" "\"orange" 6 20)
-                {} (:name "\"Mew") (:color "\"orange") (:age 6) (:color "\"orange") (:bad 20)
+                {} (:name "\"Mew") (:age 6) (:color "\"orange") (:bad 20)
             testing "\"example 1" $ is
               =
                 match-pet-1 $ :: animal-class ([] :horse "\"Jaky")
