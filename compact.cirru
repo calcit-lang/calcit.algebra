@@ -40,6 +40,8 @@
       :ns $ quote (ns algebra.maybe)
     |algebra.test $ {}
       :defs $ {}
+        |%maybe $ quote
+          defn %maybe (& args) (%:: maybe-class :maybe & args)
         |animal-class $ quote
           defrecord! animal-class $ :variants
             {}
@@ -102,35 +104,35 @@
         |test-maybe $ quote
           deftest test-maybe
             testing |map
-              is $ = (%:: maybe-class :maybe nil)
-                .map (%:: maybe-class :maybe nil) inc
-              is $ = (%:: maybe-class :maybe 2)
-                .map (%:: maybe-class :maybe 1) inc
+              is $ = (%maybe nil)
+                .map (%maybe nil) inc
+              is $ = (%maybe 2)
+                .map (%maybe 1) inc
             testing "\"bind"
-              is $ = (%:: maybe-class :maybe 2)
-                .bind (%:: maybe-class :maybe 1)
+              is $ = (%maybe 2)
+                .bind (%maybe 1)
                   fn (x)
-                    %:: maybe-class :maybe $ inc x
-              is $ = (%:: maybe-class :maybe nil)
-                .bind (%:: maybe-class :maybe nil)
+                    %maybe $ inc x
+              is $ = (%maybe nil)
+                .bind (%maybe nil)
                   fn (x)
-                    %:: maybe-class :maybe $ inc x
+                    %maybe $ inc x
             testing "\"apply"
-              is $ = (%:: maybe-class :maybe 2)
-                .apply (%:: maybe-class :maybe 1) (%:: maybe-class :maybe inc)
-              is $ = (%:: maybe-class :maybe nil)
-                .apply (%:: maybe-class :maybe nil) (%:: maybe-class :maybe inc)
-              is $ = (%:: maybe-class :maybe nil)
-                .apply (%:: maybe-class :maybe 1) (%:: maybe-class :maybe nil)
+              is $ = (%maybe 2)
+                .apply (%maybe 1) (%maybe inc)
+              is $ = (%maybe nil)
+                .apply (%maybe nil) (%maybe inc)
+              is $ = (%maybe nil)
+                .apply (%maybe 1) (%maybe nil)
             testing "\"alt"
-              is $ = (%:: maybe-class :maybe 1)
-                .alt (%:: maybe-class :maybe 1) (%:: maybe-class :maybe 2)
-              is $ = (%:: maybe-class :maybe 1)
-                .alt (%:: maybe-class :maybe 1) (%:: maybe-class :maybe nil)
-              is $ = (%:: maybe-class :maybe 2)
-                .alt (%:: maybe-class :maybe nil) (%:: maybe-class :maybe 2)
-              is $ = (%:: maybe-class :maybe nil)
-                .alt (%:: maybe-class :maybe nil) (%:: maybe-class :maybe nil)
+              is $ = (%maybe 1)
+                .alt (%maybe 1) (%maybe 2)
+              is $ = (%maybe 1)
+                .alt (%maybe 1) (%maybe nil)
+              is $ = (%maybe 2)
+                .alt (%maybe nil) (%maybe 2)
+              is $ = (%maybe nil)
+                .alt (%maybe nil) (%maybe nil)
       :ns $ quote
         ns algebra.test $ :require
           calcit-test.core :refer $ deftest testing is *quit-on-failure?
