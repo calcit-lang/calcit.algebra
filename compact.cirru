@@ -6,42 +6,52 @@
   :files $ {}
     |algebra.maybe $ {}
       :defs $ {}
+        |%maybe $ quote
+          defn %maybe (& args) (%:: maybe-class & args)
         |&alt-maybe $ quote
           defn &alt-maybe (self other)
-            let
-                klass $ nth self 0
-                data $ nth self 1
-              , self $ if (some? data) self other
+            tag-match self
+                :none
+                tag-match other
+                    :none
+                    , other
+                  (:some _x) other
+                  _ $ raise (str-spaced "\"unknown other:" other)
+              (:some _x) self
+              _ $ raise (str-spaced "\"unkown self:" self)
         |&apply-maybe $ quote
           defn &apply-maybe (self mf)
-            let
-                klass $ nth self 0
-                data $ nth self 1
-              if (nil? data) self $ let
-                  c2 $ nth mf 0
-                  f $ nth mf 1
-                if (not= c2 klass) (raise "\"expected maybe data")
-                  if (nil? f) (:: klass nil)
-                    :: klass $ f data
+            tag-match self
+                :none
+                , self
+              (:some x)
+                tag-match mf
+                    :none
+                    , mf
+                  (:some f)
+                    %maybe :some $ f x
+                  _ $ raise (str-spaced "\"unknown mf" mf)
+              _ $ raise (str-spaced "\"unkown data" self)
         |&bind-maybe $ quote
           defn &bind-maybe (self fm)
-            let
-                klass $ nth self 0
-                data $ nth self 1
-              if (nil? data) self $ fm data
+            tag-match self
+                :none
+                , self
+              (:some x) (fm x)
+              _ $ raise (str "\"unknown " self)
         |&map-maybe $ quote
           defn &map-maybe (self f)
-            let
-                klass $ nth self 0
-                data $ nth self 1
-              if (nil? data) self $ :: klass (f data)
+            tag-match self
+                :none
+                , self
+              (:some x)
+                %maybe :some $ f x
+              _ $ raise (str "\"invalid case" self)
         |maybe-class $ quote
           defrecord! maybe-class (:map &map-maybe) (:bind &bind-maybe) (:apply &apply-maybe) (:alt &alt-maybe)
       :ns $ quote (ns algebra.maybe)
     |algebra.test $ {}
       :defs $ {}
-        |%maybe $ quote
-          defn %maybe (& args) (%:: maybe-class :maybe & args)
         |animal-class $ quote
           defrecord! animal-class $ :variants
             {}
@@ -104,36 +114,36 @@
         |test-maybe $ quote
           deftest test-maybe
             testing |map
-              is $ = (%maybe nil)
-                .map (%maybe nil) inc
-              is $ = (%maybe 2)
-                .map (%maybe 1) inc
+              is $ = (%maybe :none)
+                .map (%maybe :none) inc
+              is $ = (%maybe :some 2)
+                .map (%maybe :some 1) inc
             testing "\"bind"
-              is $ = (%maybe 2)
-                .bind (%maybe 1)
+              is $ = (%maybe :some 2)
+                .bind (%maybe :some 1)
                   fn (x)
-                    %maybe $ inc x
-              is $ = (%maybe nil)
-                .bind (%maybe nil)
+                    %maybe :some $ inc x
+              is $ = (%maybe :none)
+                .bind (%maybe :none)
                   fn (x)
-                    %maybe $ inc x
+                    %maybe :some $ inc x
             testing "\"apply"
-              is $ = (%maybe 2)
-                .apply (%maybe 1) (%maybe inc)
-              is $ = (%maybe nil)
-                .apply (%maybe nil) (%maybe inc)
-              is $ = (%maybe nil)
-                .apply (%maybe 1) (%maybe nil)
+              is $ = (%maybe :some 2)
+                .apply (%maybe :some 1) (%maybe :some inc)
+              is $ = (%maybe :none)
+                .apply (%maybe :none) (%maybe :some inc)
+              is $ = (%maybe :none)
+                .apply (%maybe :some 1) (%maybe :none)
             testing "\"alt"
-              is $ = (%maybe 1)
-                .alt (%maybe 1) (%maybe 2)
-              is $ = (%maybe 1)
-                .alt (%maybe 1) (%maybe nil)
-              is $ = (%maybe 2)
-                .alt (%maybe nil) (%maybe 2)
-              is $ = (%maybe nil)
-                .alt (%maybe nil) (%maybe nil)
+              is $ = (%maybe :some 1)
+                .alt (%maybe :some 1) (%maybe :some 2)
+              is $ = (%maybe :some 1)
+                .alt (%maybe :some 1) (%maybe :none)
+              is $ = (%maybe :some 2)
+                .alt (%maybe :none) (%maybe :some 2)
+              is $ = (%maybe :none)
+                .alt (%maybe :none) (%maybe :none)
       :ns $ quote
         ns algebra.test $ :require
           calcit-test.core :refer $ deftest testing is *quit-on-failure?
-          algebra.maybe :refer $ maybe-class
+          algebra.maybe :refer $ maybe-class %maybe

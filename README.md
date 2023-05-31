@@ -9,55 +9,62 @@
 Maybe:
 
 ```cirru
-ns demo
-  :require
-    algebra.maybe :refer $ maybe-class
+; |map
 
-is $ = (:: maybe-class nil)
-  .map (:: maybe-class nil) inc
-is $ = (:: maybe-class 2)
-  .map (:: maybe-class 1) inc
+is $ = (%maybe :none)
+  .map (%maybe :none) inc
 
-is $ = (:: maybe-class 2)
-  .bind (:: maybe-class 1)
+is $ = (%maybe :some 2)
+  .map (%maybe :some 1) inc
+
+; "\"bind"
+
+is $ = (%maybe :some 2)
+  .bind (%maybe :some 1)
     fn (x)
-      :: maybe-class $ inc x
-is $ = (:: maybe-class nil)
-  .bind (:: maybe-class nil)
+      %maybe :some $ inc x
+
+is $ = (%maybe :none)
+  .bind (%maybe :none)
     fn (x)
-      :: maybe-class $ inc x
+      %maybe :some $ inc x
 
-is $ = (:: maybe-class 2)
-  .apply (:: maybe-class 1)
-    :: maybe-class inc
-is $ = (:: maybe-class nil)
-  .apply (:: maybe-class nil)
-    :: maybe-class inc
-is $ = (:: maybe-class nil)
-  .apply (:: maybe-class 1)
-    :: maybe-class nil
+; "\"apply"
 
-is $ = (:: maybe-class 1)
-  .alt (:: maybe-class 1)
-    :: maybe-class 2
-is $ = (:: maybe-class 1)
-  .alt (:: maybe-class 1)
-    :: maybe-class nil
-is $ = (:: maybe-class 2)
-  .alt (:: maybe-class nil)
-    :: maybe-class 2
-is $ = (:: maybe-class nil)
-  .alt (:: maybe-class nil)
-    :: maybe-class nil
+is $ = (%maybe :some 2)
+  .apply (%maybe :some 1)
+    %maybe :some inc
+
+is $ = (%maybe :none)
+  .apply (%maybe :none)
+    %maybe :some inc
+
+is $ = (%maybe :none)
+  .apply (%maybe :some 1)
+    %maybe :none
+
+; "\"alt"
+
+is $ = (%maybe :some 1)
+  .alt (%maybe :some 1)
+    %maybe :some 2
+
+is $ = (%maybe :some 1)
+  .alt (%maybe :some 1)
+    %maybe :none
+
+is $ = (%maybe :some 2)
+  .alt (%maybe :none)
+    %maybe :some 2
+
+is $ = (%maybe :none)
+  .alt (%maybe :none)
+    %maybe :none
 ```
 
 `checked-match` macro(much slower than `key-match`, not suggested to use):
 
 ```cirru
-ns demo
-  :require
-    algebra.match :refer $ checked-match
-
 defrecord! animal-class $ :variants
   {}
     :cat $ [] :name :color :age :breaks
@@ -65,21 +72,35 @@ defrecord! animal-class $ :variants
     :bird $ [] :name :category :origin
     :horse $ [] :name
 
-&let
-  pet $ :: animal-class ([] :cat "\"Mew" "\"orange" 6 20)
-  checked-match pet
-    (:cat name color age break-times)
-      println "\"Cat" name
-    (:dog name color age)
-      println "\"Dog" name
-    (:bird name _ origin)
-      println "\"Bird from" origin
-    (:horse name)
-      println "\"Horse"
-  checked-match pet
-    (:cat name color age break-times)
-      println "\"2.. Cat" name
-    _ $ println "\"not cat"
+; "\"example 1"
+is
+  =
+    match-pet-1 $ %:: animal-class :cat "\"Mew" "\"orange" 6 20
+    {} (:name "\"Mew")
+      :age 6
+      :color "\"orange"
+      :bad 20
+
+; "\"example 1"
+
+is
+  =
+    match-pet-1 $ %:: animal-class :horse "\"Jaky"
+    {} $ :name "\"Jaky"
+
+; "\"example 2"
+
+is
+  =
+    match-pet-2 $ %:: animal-class :cat "\"Mew" "\"orange" 6 20
+    [] "\"Cat" "\"Mew"
+
+; "\"example 2"
+
+is
+  =
+    match-pet-2 $ %:: animal-class :dog "\"Dou" "\"orange" 6
+    , "\"not cat"
 ```
 
 _TODO_
