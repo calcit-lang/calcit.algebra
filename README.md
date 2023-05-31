@@ -62,7 +62,7 @@ is $ = (%maybe :none)
     %maybe :none
 ```
 
-`checked-match` macro(much slower than `key-match`, not suggested to use):
+A demo of `tag-match` macro:
 
 ```cirru
 defrecord! animal-class $ :variants
@@ -71,6 +71,18 @@ defrecord! animal-class $ :variants
     :dog $ [] :name :color :age
     :bird $ [] :name :category :origin
     :horse $ [] :name
+
+defn match-pet-1 (pet)
+  tag-match pet
+      :cat name color age break-times
+      {} (:name name) (:color color) (:age age) (:bad break-times)
+    (:dog name color age)
+      {} (:name name) (:color color) (:age age)
+    (:bird name category origin)
+      {} (:name name) (:category category) (:origin origin)
+    (:horse name)
+      {} $ :name name
+    _ "\"unknown match result"
 
 ; "\"example 1"
 is
