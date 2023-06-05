@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@calcit/procs": "^0.6.2"
+    "@calcit/procs": "^0.7.0-a5"
   },
   "scripts": {
     "try-js": "mode=ci cr --emit-js -1 && yarn && mode=ci node ./main.mjs",
