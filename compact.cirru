@@ -1,6 +1,6 @@
 
 {} (:package |algebra)
-  :configs $ {} (:init-fn |algebra.test/main!) (:reload-fn |algebra.test/reload!) (:version nil)
+  :configs $ {} (:init-fn |algebra.test/main!) (:reload-fn |algebra.test/reload!) (:version |0.0.7)
     :modules $ [] |calcit-test/
   :entries $ {}
   :files $ {}
