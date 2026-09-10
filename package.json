@@ -1,11 +1,11 @@
 {
   "dependencies": {
-    "@calcit/procs": "0.13.77"
+    "@calcit/procs": "0.14.7"
   },
   "scripts": {
     "try-js": "mode=ci calcit calcit.cirru js && mode=ci node ./main.mjs",
     "watch-server": "calcit calcit.cirru --watch"
   },
   "packageManager": "yarn@4.12.0",
-  "version": "0.0.8"
+  "version": "0.0.9"
 }

@@ -12,53 +12,53 @@ Maybe:
 ; |map
 
 is $ = (%maybe :none)
-  .map (%maybe :none) inc
+  maybe:map (%maybe :none) inc
 
 is $ = (%maybe :some 2)
-  .map (%maybe :some 1) inc
+  maybe:map (%maybe :some 1) inc
 
 ; "\"bind"
 
 is $ = (%maybe :some 2)
-  .bind (%maybe :some 1)
+  maybe:bind (%maybe :some 1)
     fn (x)
       %maybe :some $ inc x
 
 is $ = (%maybe :none)
-  .bind (%maybe :none)
+  maybe:bind (%maybe :none)
     fn (x)
       %maybe :some $ inc x
 
 ; "\"apply"
 
 is $ = (%maybe :some 2)
-  .apply (%maybe :some 1)
+  maybe:apply (%maybe :some 1)
     %maybe :some inc
 
 is $ = (%maybe :none)
-  .apply (%maybe :none)
+  maybe:apply (%maybe :none)
     %maybe :some inc
 
 is $ = (%maybe :none)
-  .apply (%maybe :some 1)
+  maybe:apply (%maybe :some 1)
     %maybe :none
 
 ; "\"alt"
 
 is $ = (%maybe :some 1)
-  .alt (%maybe :some 1)
+  maybe:alt (%maybe :some 1)
     %maybe :some 2
 
 is $ = (%maybe :some 1)
-  .alt (%maybe :some 1)
+  maybe:alt (%maybe :some 1)
     %maybe :none
 
 is $ = (%maybe :some 2)
-  .alt (%maybe :none)
+  maybe:alt (%maybe :none)
     %maybe :some 2
 
 is $ = (%maybe :none)
-  .alt (%maybe :none)
+  maybe:alt (%maybe :none)
     %maybe :none
 ```
 
@@ -120,6 +120,12 @@ _TODO_
 ### Workflow
 
 https://github.com/calcit-lang/calcit-workflow
+
+Calcit 0.14.7 uses the typed `maybe:map`, `maybe:bind`, `maybe:apply`, and
+`maybe:alt` functions in strict code. Constructed values still carry the legacy
+runtime trait implementation for compatibility, while CI rejects unresolved
+dynamic method dispatch. The only remaining Dynamic position is the intentional
+semantic result of the phase-aware `in-rust:` test macro.
 
 ### License
 
