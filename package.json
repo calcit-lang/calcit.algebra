@@ -6,6 +6,6 @@
     "try-js": "mode=ci calcit calcit.cirru js && mode=ci node ./main.mjs",
     "watch-server": "calcit calcit.cirru --watch"
   },
-  "packageManager": "yarn@4.12.0",
+  "packageManager": "yarn@4.18.0",
   "version": "0.0.11"
 }
