@@ -3,7 +3,7 @@
   :about "|Machine-generated snapshot. Do not edit directly — changes will be overwritten. Use `calcit query` to inspect and `calcit edit`/`calcit tree` to modify. Run `calcit docs agents --contract` before mutations; use `--full` for first orientation or changed contract digest. Manual edits must follow format and schema conventions, then run `calcit edit format`."
   :package |algebra
   :entries $ {} $ :default
-    {} (:description |) (:init-fn 'algebra.test/main!) (:mode :native) (:reload-fn 'algebra.test/reload!)
+    {} (:description |) (:init-fn 'algebra.test/main!) (:mode :native) (:reload-fn 'algebra.test/reload!) (:target :native)
       :feature-policy $ {}
       :modules $ []
       :type-slots $ {}
@@ -164,11 +164,11 @@
         'match-pet-1 $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn match-pet-1 (pet)
             match pet
-              (:cat name color age break-times) (%:: PetMatch :cat name color age break-times)
-              (:dog name color age) (%:: PetMatch :dog name color age)
-              (:bird name category origin) (%:: PetMatch :bird name category origin)
-              (:horse name) (%:: PetMatch :horse name)
-              _ $ %:: PetMatch :unknown |unknown
+              (:cat name color age break-times) (PetMatch :cat name color age break-times)
+              (:dog name color age) (PetMatch :dog name color age)
+              (:bird name category origin) (PetMatch :bird name category origin)
+              (:horse name) (PetMatch :horse name)
+              _ $ PetMatch :unknown |unknown
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Enum)
             :args $ [] 'Enum
@@ -192,31 +192,35 @@
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
         'test-match $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn test-match ()
-            do
-              do |example-1 $ is $ =
-                match-pet-1 $ %:: animal-class :cat |Mew |orange 6 20
-                %:: PetMatch :cat |Mew |orange 6 20
-              do |example-1 $ is $ =
-                match-pet-1 $ %:: animal-class :horse |Jaky
-                %:: PetMatch :horse |Jaky
-              do |example-2 $ is $ =
-                match-pet-2 $ %:: animal-class :cat |Mew |orange 6 20
-                [] |Cat |Mew
-              do |example-2 $ is $ =
-                match-pet-2 $ %:: animal-class :dog |Dou |orange 6
-                [] "|not cat"
+          :code $ quote $ defn test-match () |example-1
+            is $ =
+              match-pet-1 $ animal-class :cat |Mew |orange 6 20
+              PetMatch :cat |Mew |orange 6 20
+            , |example-1
+              is $ =
+                match-pet-1 $ animal-class :horse |Jaky
+                PetMatch :horse |Jaky
+              , |example-2
+                is $ =
+                  match-pet-2 $ animal-class :cat |Mew |orange 6 20
+                  [] |Cat |Mew
+                , |example-2
+                  is $ =
+                    match-pet-2 $ animal-class :dog |Dou |orange 6
+                    [] "|not cat"
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
+          :tests $ [] $ %{} 'TestEntry (:name |enum-matching)
+            :code $ quote $ test-match
+            :tags $ #{} :unit
         'test-maybe $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn test-maybe ()
-            do |map
-              is $ = (%maybe :none)
-                maybe:map (%maybe :none) inc
-              is $ = (%maybe :some 2)
-                maybe:map (%maybe :some 1) inc
-            do |bind
+          :code $ quote $ defn test-maybe () |map
+            is $ = (%maybe :none)
+              maybe:map (%maybe :none) inc
+            is $ = (%maybe :some 2)
+              maybe:map (%maybe :some 1) inc
+            , |bind
               is $ = (%maybe :some 2)
                 maybe:bind (%maybe :some 1)
                   fn (x)
@@ -225,25 +229,28 @@
                 maybe:bind (%maybe :none)
                   fn (x)
                     %maybe :some $ inc x
-            do |apply
-              is $ = (%maybe :some 2)
-                maybe:apply (%maybe :some 1) (%maybe :some inc)
-              is $ = (%maybe :none)
-                maybe:apply (%maybe :none) (%maybe :some inc)
-              is $ = (%maybe :none)
-                maybe:apply (%maybe :some 1) (%maybe :none)
-            do |alt
-              is $ = (%maybe :some 1)
-                maybe:alt (%maybe :some 1) (%maybe :some 2)
-              is $ = (%maybe :some 1)
-                maybe:alt (%maybe :some 1) (%maybe :none)
-              is $ = (%maybe :some 2)
-                maybe:alt (%maybe :none) (%maybe :some 2)
-              is $ = (%maybe :none)
-                maybe:alt (%maybe :none) (%maybe :none)
+              , |apply
+                is $ = (%maybe :some 2)
+                  maybe:apply (%maybe :some 1) (%maybe :some inc)
+                is $ = (%maybe :none)
+                  maybe:apply (%maybe :none) (%maybe :some inc)
+                is $ = (%maybe :none)
+                  maybe:apply (%maybe :some 1) (%maybe :none)
+                , |alt
+                  is $ = (%maybe :some 1)
+                    maybe:alt (%maybe :some 1) (%maybe :some 2)
+                  is $ = (%maybe :some 1)
+                    maybe:alt (%maybe :some 1) (%maybe :none)
+                  is $ = (%maybe :some 2)
+                    maybe:alt (%maybe :none) (%maybe :some 2)
+                  is $ = (%maybe :none)
+                    maybe:alt (%maybe :none) (%maybe :none)
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
+          :tests $ [] $ %{} 'TestEntry (:name |maybe-operations)
+            :code $ quote $ test-maybe
+            :tags $ #{} :unit
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns algebra.test
           :require

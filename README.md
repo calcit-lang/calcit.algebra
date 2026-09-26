@@ -1,132 +1,68 @@
+# Experimental Calcit Algebra
 
-[Experimental] Calcit Algebra
-----
+Typed Maybe operations for exploring algebraic composition.
 
-> Algebraic classes for exploring
-
-### Usages
-
-Maybe:
+## Usage
 
 ```cirru
-; |map
+ns demo $ :require $ algebra.maybe :refer (%maybe maybe:map maybe:bind maybe:apply maybe:alt)
 
-is $ = (%maybe :none)
-  maybe:map (%maybe :none) inc
-
-is $ = (%maybe :some 2)
+assert= (%maybe :some 2)
   maybe:map (%maybe :some 1) inc
 
-; "\"bind"
+assert= (%maybe :none)
+  maybe:map (%maybe :none) inc
 
-is $ = (%maybe :some 2)
+assert= (%maybe :some 2)
   maybe:bind (%maybe :some 1)
     fn (x)
       %maybe :some $ inc x
 
-is $ = (%maybe :none)
-  maybe:bind (%maybe :none)
-    fn (x)
-      %maybe :some $ inc x
+assert= (%maybe :some 2)
+  maybe:apply (%maybe :some 1) (%maybe :some inc)
 
-; "\"apply"
-
-is $ = (%maybe :some 2)
-  maybe:apply (%maybe :some 1)
-    %maybe :some inc
-
-is $ = (%maybe :none)
-  maybe:apply (%maybe :none)
-    %maybe :some inc
-
-is $ = (%maybe :none)
-  maybe:apply (%maybe :some 1)
-    %maybe :none
-
-; "\"alt"
-
-is $ = (%maybe :some 1)
-  maybe:alt (%maybe :some 1)
-    %maybe :some 2
-
-is $ = (%maybe :some 1)
-  maybe:alt (%maybe :some 1)
-    %maybe :none
-
-is $ = (%maybe :some 2)
-  maybe:alt (%maybe :none)
-    %maybe :some 2
-
-is $ = (%maybe :none)
-  maybe:alt (%maybe :none)
-    %maybe :none
+assert= (%maybe :some 2)
+  maybe:alt (%maybe :none) (%maybe :some 2)
 ```
 
-A demo of `tag-match` macro:
+Use the typed `maybe:map`, `maybe:bind`, `maybe:apply`, and `maybe:alt`
+functions in strict code. Constructed values retain the legacy trait
+implementation for compatibility. The old `defrecord!` / `tag-match` demo is
+retired; current enum/match examples are exercised in `algebra.test/test-match`.
 
-```cirru
-defrecord! animal-class $ :variants
-  {}
-    :cat $ [] :name :color :age :breaks
-    :dog $ [] :name :color :age
-    :bird $ [] :name :category :origin
-    :horse $ [] :name
+## Development
 
-defn match-pet-1 (pet)
-  tag-match pet
-      :cat name color age break-times
-      {} (:name name) (:color color) (:age age) (:bad break-times)
-    (:dog name color age)
-      {} (:name name) (:color color) (:age age)
-    (:bird name category origin)
-      {} (:name name) (:category category) (:origin origin)
-    (:horse name)
-      {} $ :name name
-    _ "\"unknown match result"
+Use Calcit / `@calcit/procs` 0.22.1, Node 24, and Yarn 4.18.0 with the
+node-modules linker. Only the exact newly published runtime version is exempt
+from Yarn's package age gate; other security defaults remain enabled.
 
-; "\"example 1"
-is
-  =
-    match-pet-1 $ %:: animal-class :cat "\"Mew" "\"orange" 6 20
-    {} (:name "\"Mew")
-      :age 6
-      :color "\"orange"
-      :bad 20
-
-; "\"example 1"
-
-is
-  =
-    match-pet-1 $ %:: animal-class :horse "\"Jaky"
-    {} $ :name "\"Jaky"
-
-; "\"example 2"
-
-is
-  =
-    match-pet-2 $ %:: animal-class :cat "\"Mew" "\"orange" 6 20
-    [] "\"Cat" "\"Mew"
-
-; "\"example 2"
-
-is
-  =
-    match-pet-2 $ %:: animal-class :dog "\"Dou" "\"orange" 6
-    , "\"not cat"
+```bash
+caps --strict --ci
+yarn install --immutable
+caps verify --toolchain
+calcit edit format
+git diff --exit-code -- calcit.cirru
+calcit --check-only
+calcit analyze check-public --ns algebra.maybe --summary-only
+calcit analyze check-types --summary-only --format json
+calcit analyze weak-types --only schema-dynamic,unresolved-type-slot,code-dynamic --intent unresolved --summary-only --format json
+calcit analyze deprecated --summary-only --format json
+calcit analyze dynamic-methods --format json
+calcit analyze quality --baseline config/calcit-quality.cirru
+calcit docs format-md README.md --check
+calcit docs check-md README.md --failures-only
+mode=ci calcit
+calcit test --require-match
+calcit js
+mode=ci node main.mjs
 ```
 
-_TODO_
+The default entry executes the actual assertions on native and JavaScript.
+Two definition-attached tests also invoke the Maybe and enum-matching suites,
+with `--require-match` preventing an empty test selection. The existing baseline is unchanged:
+the only Dynamic position is the semantic result of the phase-aware
+`in-rust:` test macro. No unresolved type slots or unsafe coercions are added.
 
-### Workflow
-
-https://github.com/calcit-lang/calcit-workflow
-
-Calcit 0.14.7 uses the typed `maybe:map`, `maybe:bind`, `maybe:apply`, and
-`maybe:alt` functions in strict code. Constructed values still carry the legacy
-runtime trait implementation for compatibility, while CI rejects unresolved
-dynamic method dispatch. The only remaining Dynamic position is the intentional
-semantic result of the phase-aware `in-rust:` test macro.
-
-### License
+## License
 
 MIT
