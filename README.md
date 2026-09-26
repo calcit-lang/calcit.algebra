@@ -32,7 +32,7 @@ retired; current enum/match examples are exercised in `algebra.test/test-match`.
 
 ## Development
 
-Use Calcit / `@calcit/procs` 0.23.1, Node 24, and Yarn 4.18.0 with the
+Use Calcit / `@calcit/procs` 0.24.2, Node 24, and Yarn 4.18.0 with the
 node-modules linker. Only the exact newly published runtime version is exempt
 from Yarn's package age gate; other security defaults remain enabled.
 
