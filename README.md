@@ -32,9 +32,9 @@ retired; current enum/match examples are exercised in `algebra.test/test-match`.
 
 ## Development
 
-Use Calcit / `@calcit/procs` 0.24.2, Node 24, and Yarn 4.18.0 with the
-node-modules linker. Only the exact newly published runtime version is exempt
-from Yarn's package age gate; other security defaults remain enabled.
+开发工具链使用正式 Calcit / `@calcit/procs` 0.28.0、Node 24 和 Yarn
+4.18.0（node-modules linker）。安装审批仅覆盖精确的运行时及其
+`finger-vec` 依赖，其余安全默认配置保持不变。
 
 ```bash
 caps --strict --ci
@@ -44,10 +44,6 @@ calcit edit format
 git diff --exit-code -- calcit.cirru
 calcit --check-only
 calcit analyze check-public --ns algebra.maybe --summary-only
-calcit analyze check-types --summary-only --format json
-calcit analyze weak-types --only schema-dynamic,unresolved-type-slot,code-dynamic --intent unresolved --summary-only --format json
-calcit analyze deprecated --summary-only --format json
-calcit analyze dynamic-methods --format json
 calcit analyze quality --baseline config/calcit-quality.cirru
 calcit docs format-md README.md --check
 calcit docs check-md README.md --failures-only
