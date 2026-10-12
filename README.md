@@ -58,7 +58,8 @@ mode=ci node main.mjs
 ```
 
 The default entry executes the actual assertions on native and JavaScript.
-Two definition-attached tests also invoke the Maybe and enum-matching suites,
+Three definition-attached tests cover compatibility construction and the
+Maybe and enum-matching suites,
 with `--require-match` preventing an empty test selection. The accepted quality baseline is retired:
 the only Dynamic position is the semantic result of the phase-aware
 `in-rust:` test macro. No unresolved type slots or unsafe coercions are added.

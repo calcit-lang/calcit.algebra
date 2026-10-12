@@ -24,6 +24,11 @@
             :args $ [] 'Tag
             :generics $ [] 'T
             :return $ :: 'algebra.maybe/Maybe0 'T
+          :tests $ [] $ %{} 'TestEntry (:name |compatibility-construction)
+            :code $ quote $ do
+              assert= (maybe-class :none) (%maybe :none)
+              assert= (maybe-class :some 1) (%maybe :some 1)
+            :tags $ #{} :unit
         '%maybe-impl $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defimpl %maybe-impl MaybeTrait (.map &map-maybe) (.bind &bind-maybe) (.apply &apply-maybe) (.alt &alt-maybe)
           :examples $ []
