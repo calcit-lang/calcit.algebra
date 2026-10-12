@@ -11,11 +11,19 @@
     'algebra.maybe $ %{} 'FileEntry
       :defs $ {}
         '%maybe $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn %maybe (tag & args) (%:: maybe-class tag & args)
+          :code $ quote $ defn %maybe (tag & args)
+            match tag
+              :none $ if (.empty? args) (maybe-class :none) (raise "|Maybe0:none expects zero payloads")
+              :some $ if
+                = 1 $ .len args
+                maybe-class :some $ .unwrap $ first args
+                raise "|Maybe0:some expects one payload"
+              _ $ raise |unknown-maybe-variant
           :examples $ []
-          :schema $ :: 'Fn $ {} (:rest 'T) (:return 'Enum)
+          :schema $ :: 'Fn $ {} (:rest 'T)
             :args $ [] 'Tag
             :generics $ [] 'T
+            :return $ :: 'algebra.maybe/Maybe0 'T
         '%maybe-impl $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defimpl %maybe-impl MaybeTrait (.map &map-maybe) (.bind &bind-maybe) (.apply &apply-maybe) (.alt &alt-maybe)
           :examples $ []
@@ -31,8 +39,10 @@
               (:some _x) self
               _ $ raise $ str-spaced "|unkown self:" self
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Enum)
-            :args $ [] 'Enum 'Enum
+          :schema $ :: 'Fn $ {}
+            :args $ [] (:: 'algebra.maybe/Maybe0 'T) (:: 'algebra.maybe/Maybe0 'T)
+            :generics $ [] 'T
+            :return $ :: 'algebra.maybe/Maybe0 'T
         '&apply-maybe $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn &apply-maybe (self mf)
             match self
@@ -41,14 +51,16 @@
                 match mf
                   (:none) mf
                   (:some f)
-                    %::
-                      option:unwrap $ enum-definition self
-                      , :some $ f x
+                    maybe-class :some $ f x
                   _ $ raise $ str-spaced "|unknown mf" mf
               _ $ raise $ str-spaced "|unkown data" self
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Enum)
-            :args $ [] 'Enum 'Enum
+          :schema $ :: 'Fn $ {}
+            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
+              :: 'algebra.maybe/Maybe0 $ :: 'Fn $ {} (:return 'U)
+                :args $ [] 'T
+            :generics $ [] 'T 'U
+            :return $ :: 'algebra.maybe/Maybe0 'U
         '&bind-maybe $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn &bind-maybe (self fm)
             match self
@@ -56,52 +68,56 @@
               (:some x) (fm x)
               _ $ raise $ str "|unknown " self
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Enum)
-            :args $ [] 'Enum $ :: 'Fn
-              {} (:return 'Enum)
+          :schema $ :: 'Fn $ {}
+            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
+              :: 'Fn $ {}
                 :args $ [] 'T
-            :generics $ [] 'T
+                :return $ :: 'algebra.maybe/Maybe0 'U
+            :generics $ [] 'T 'U
+            :return $ :: 'algebra.maybe/Maybe0 'U
         '&map-maybe $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn &map-maybe (self f)
             match self
               (:none) self
               (:some x)
-                %::
-                  option:unwrap $ enum-definition self
-                  , :some $ f x
+                maybe-class :some $ f x
               _ $ raise $ str "|invalid case" self
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Enum)
-            :args $ [] 'Enum $ :: 'Fn
-              {} (:return 'U)
+          :schema $ :: 'Fn $ {}
+            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
+              :: 'Fn $ {} (:return 'U)
                 :args $ [] 'T
             :generics $ [] 'T 'U
+            :return $ :: 'algebra.maybe/Maybe0 'U
         'Maybe0 $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defenum Maybe0 ([] 'T) (:none) (:some 'T)
           :examples $ []
           :schema $ :: 'EnumDef
         'MaybeTrait $ %{} 'CodeEntry (:doc |)
           :code $ quote $ deftrait MaybeTrait
-            .map $ :: 'Fn $ {}
+            .map $ :: 'Fn $ {} (:kind :fn)
+              :args $ [] (:: 'algebra.maybe/Maybe0 'T)
+                :: 'Fn $ {} (:return 'U)
+                  :args $ [] 'T
               :generics $ [] 'T 'U
-              :args $ [] 'Enum $ :: 'Fn
-                {}
+              :return $ :: 'algebra.maybe/Maybe0 'U
+            .bind $ :: 'Fn $ {} (:kind :fn)
+              :args $ [] (:: 'algebra.maybe/Maybe0 'T)
+                :: 'Fn $ {}
                   :args $ [] 'T
-                  :return 'U
-              :return 'Enum
-            .bind $ :: 'Fn $ {}
+                  :return $ :: 'algebra.maybe/Maybe0 'U
+              :generics $ [] 'T 'U
+              :return $ :: 'algebra.maybe/Maybe0 'U
+            .apply $ :: 'Fn $ {} (:kind :fn)
+              :args $ [] (:: 'algebra.maybe/Maybe0 'T)
+                :: 'algebra.maybe/Maybe0 $ :: 'Fn $ {} (:return 'U)
+                  :args $ [] 'T
+              :generics $ [] 'T 'U
+              :return $ :: 'algebra.maybe/Maybe0 'U
+            .alt $ :: 'Fn $ {} (:kind :fn)
+              :args $ [] (:: 'algebra.maybe/Maybe0 'T) (:: 'algebra.maybe/Maybe0 'T)
               :generics $ [] 'T
-              :args $ [] 'Enum $ :: 'Fn
-                {}
-                  :args $ [] 'T
-                  :return 'Enum
-              :return 'Enum
-            .apply $ :: 'Fn $ {}
-              :args $ [] 'Enum 'Enum
-              :return 'Enum
-            .alt $ :: 'Fn $ {}
-              :args $ [] 'Enum 'Enum
-              :return 'Enum
+              :return $ :: 'algebra.maybe/Maybe0 'T
           :examples $ []
           :schema $ :: 'Trait
         'maybe-class $ %{} 'CodeEntry (:doc |)
@@ -111,29 +127,38 @@
         'maybe:alt $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn maybe:alt (self other) (&alt-maybe self other)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Enum)
-            :args $ [] 'Enum 'Enum
+          :schema $ :: 'Fn $ {}
+            :args $ [] (:: 'algebra.maybe/Maybe0 'T) (:: 'algebra.maybe/Maybe0 'T)
+            :generics $ [] 'T
+            :return $ :: 'algebra.maybe/Maybe0 'T
         'maybe:apply $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn maybe:apply (self mf) (&apply-maybe self mf)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Enum)
-            :args $ [] 'Enum 'Enum
+          :schema $ :: 'Fn $ {}
+            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
+              :: 'algebra.maybe/Maybe0 $ :: 'Fn $ {} (:return 'U)
+                :args $ [] 'T
+            :generics $ [] 'T 'U
+            :return $ :: 'algebra.maybe/Maybe0 'U
         'maybe:bind $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn maybe:bind (self f) (&bind-maybe self f)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Enum)
-            :args $ [] 'Enum $ :: 'Fn
-              {} (:return 'Enum)
+          :schema $ :: 'Fn $ {}
+            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
+              :: 'Fn $ {}
                 :args $ [] 'T
-            :generics $ [] 'T
+                :return $ :: 'algebra.maybe/Maybe0 'U
+            :generics $ [] 'T 'U
+            :return $ :: 'algebra.maybe/Maybe0 'U
         'maybe:map $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn maybe:map (self f) (&map-maybe self f)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Enum)
-            :args $ [] 'Enum $ :: 'Fn
-              {} (:return 'U)
+          :schema $ :: 'Fn $ {}
+            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
+              :: 'Fn $ {} (:return 'U)
                 :args $ [] 'T
             :generics $ [] 'T 'U
+            :return $ :: 'algebra.maybe/Maybe0 'U
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns algebra.maybe
     'algebra.test $ %{} 'FileEntry
@@ -216,35 +241,35 @@
             :tags $ #{} :unit
         'test-maybe $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn test-maybe () |map
-            is $ = (%maybe :none)
-              maybe:map (%maybe :none) inc
-            is $ = (%maybe :some 2)
-              maybe:map (%maybe :some 1) inc
+            is $ = (algebra.maybe/maybe-class :none)
+              maybe:map (algebra.maybe/maybe-class :none) inc
+            is $ = (algebra.maybe/maybe-class :some 2)
+              maybe:map (algebra.maybe/maybe-class :some 1) inc
             , |bind
-              is $ = (%maybe :some 2)
-                maybe:bind (%maybe :some 1)
+              is $ = (algebra.maybe/maybe-class :some 2)
+                maybe:bind (algebra.maybe/maybe-class :some 1)
                   fn (x)
-                    %maybe :some $ inc x
-              is $ = (%maybe :none)
-                maybe:bind (%maybe :none)
+                    algebra.maybe/maybe-class :some $ inc x
+              is $ = (algebra.maybe/maybe-class :none)
+                maybe:bind (algebra.maybe/maybe-class :none)
                   fn (x)
-                    %maybe :some $ inc x
+                    algebra.maybe/maybe-class :some $ inc x
               , |apply
-                is $ = (%maybe :some 2)
-                  maybe:apply (%maybe :some 1) (%maybe :some inc)
-                is $ = (%maybe :none)
-                  maybe:apply (%maybe :none) (%maybe :some inc)
-                is $ = (%maybe :none)
-                  maybe:apply (%maybe :some 1) (%maybe :none)
+                is $ = (algebra.maybe/maybe-class :some 2)
+                  maybe:apply (algebra.maybe/maybe-class :some 1) (algebra.maybe/maybe-class :some inc)
+                is $ = (algebra.maybe/maybe-class :none)
+                  maybe:apply (algebra.maybe/maybe-class :none) (algebra.maybe/maybe-class :some inc)
+                is $ = (algebra.maybe/maybe-class :none)
+                  maybe:apply (algebra.maybe/maybe-class :some 1) (algebra.maybe/maybe-class :none)
                 , |alt
-                  is $ = (%maybe :some 1)
-                    maybe:alt (%maybe :some 1) (%maybe :some 2)
-                  is $ = (%maybe :some 1)
-                    maybe:alt (%maybe :some 1) (%maybe :none)
-                  is $ = (%maybe :some 2)
-                    maybe:alt (%maybe :none) (%maybe :some 2)
-                  is $ = (%maybe :none)
-                    maybe:alt (%maybe :none) (%maybe :none)
+                  is $ = (algebra.maybe/maybe-class :some 1)
+                    maybe:alt (algebra.maybe/maybe-class :some 1) (algebra.maybe/maybe-class :some 2)
+                  is $ = (algebra.maybe/maybe-class :some 1)
+                    maybe:alt (algebra.maybe/maybe-class :some 1) (algebra.maybe/maybe-class :none)
+                  is $ = (algebra.maybe/maybe-class :some 2)
+                    maybe:alt (algebra.maybe/maybe-class :none) (algebra.maybe/maybe-class :some 2)
+                  is $ = (algebra.maybe/maybe-class :none)
+                    maybe:alt (algebra.maybe/maybe-class :none) (algebra.maybe/maybe-class :none)
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
