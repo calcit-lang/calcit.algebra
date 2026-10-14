@@ -51,10 +51,10 @@
         '&apply-maybe $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn &apply-maybe (self mf)
             match self
-              (:none) self
+              (:none) (maybe-class :none)
               (:some x)
                 match mf
-                  (:none) mf
+                  (:none) (maybe-class :none)
                   (:some f)
                     maybe-class :some $ f x
                   _ $ raise $ str-spaced "|unknown mf" mf
@@ -69,7 +69,7 @@
         '&bind-maybe $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn &bind-maybe (self fm)
             match self
-              (:none) self
+              (:none) (maybe-class :none)
               (:some x) (fm x)
               _ $ raise $ str "|unknown " self
           :examples $ []
@@ -83,7 +83,7 @@
         '&map-maybe $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn &map-maybe (self f)
             match self
-              (:none) self
+              (:none) (maybe-class :none)
               (:some x)
                 maybe-class :some $ f x
               _ $ raise $ str "|invalid case" self
@@ -209,7 +209,7 @@
               _ $ [] "|not cat"
           :examples $ []
           :schema $ :: 'Fn $ {}
-            :args $ [] 'Enum
+            :args $ [] 'algebra.test/animal-class
             :return $ :: 'List 'String
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () (run-tests)
@@ -254,16 +254,24 @@
               is $ = (algebra.maybe/maybe-class :some 2)
                 maybe:bind (algebra.maybe/maybe-class :some 1)
                   fn (x)
+                    hint-fn $ {}
+                      :args $ [] 'Number
+                      :return $ :: 'algebra.maybe/Maybe0 'Number
                     algebra.maybe/maybe-class :some $ inc x
               is $ = (algebra.maybe/maybe-class :none)
                 maybe:bind (algebra.maybe/maybe-class :none)
                   fn (x)
+                    hint-fn $ {}
+                      :args $ [] 'Number
+                      :return $ :: 'algebra.maybe/Maybe0 'Number
                     algebra.maybe/maybe-class :some $ inc x
               , |apply
                 is $ = (algebra.maybe/maybe-class :some 2)
                   maybe:apply (algebra.maybe/maybe-class :some 1) (algebra.maybe/maybe-class :some inc)
                 is $ = (algebra.maybe/maybe-class :none)
-                  maybe:apply (algebra.maybe/maybe-class :none) (algebra.maybe/maybe-class :some inc)
+                  maybe:apply
+                    assert-type (algebra.maybe/maybe-class :none) (:: 'algebra.maybe/Maybe0 'Number)
+                    algebra.maybe/maybe-class :some inc
                 is $ = (algebra.maybe/maybe-class :none)
                   maybe:apply (algebra.maybe/maybe-class :some 1) (algebra.maybe/maybe-class :none)
                 , |alt
