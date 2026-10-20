@@ -4,7 +4,7 @@ Typed Maybe operations for exploring algebraic composition.
 
 ## 使用者影响
 
-0.0.15 候选将 Calcit / `@calcit/procs` 配对到正式 0.30.0，消费者需同步工具链。
+0.0.16 候选将 Calcit / `@calcit/procs` 配对到已完成发布的 0.30.1-alpha.5，消费者需同步工具链。正式 0.30.1 CLI/npm 配对尚未完成，不单独升级一端。
 Maybe 的泛型关系、nominal 构造器和兼容 `%maybe` wrapper 保持不变，源码和测试
 无需改写。`.bind` 是本库 `MaybeTrait` 方法，不是待迁移的 core 别名。
 本库没有前端资源、服务端部署或 COS/CDN 配置；发布状态以 GitHub Releases 为准。
@@ -42,7 +42,7 @@ retired; current enum/match examples are exercised in `algebra.test/test-match`.
 
 ## Development
 
-开发工具链使用正式 Calcit / `@calcit/procs` 0.30.0、Node 24 和 Yarn
+开发工具链使用已完整发布配对的 Calcit / `@calcit/procs` 0.30.1-alpha.5、Node 24 和 Yarn
 4.18.0（node-modules linker）。移除旧运行时版本的安装年龄例外，
 使用全局安全默认配置，不额外增加放行项。
 
@@ -71,8 +71,8 @@ Maybe and enum-matching suites,
 with `--require-match` preventing an empty test selection. The accepted quality baseline is retired:
 the only Dynamic position is the semantic result of the phase-aware
 `in-rust:` test macro. No unresolved type slots or unsafe coercions are added.
-Module `0.0.15` is prepared for release after CI and review; no compiler
-candidate, hash dependency, or prerelease is required. This library has no
+Module `0.0.16` is prepared for a formal release after CI and review; no compiler
+build or hash dependency is required. The CLI/runtime pair remains the completed alpha.5 publication until formal 0.30.1 publication finishes. This library has no
 frontend assets, so COS/CDN configuration is not applicable.
 
 Generic `map`, `bind`, and `apply` construct a fresh payload-free `:none`
