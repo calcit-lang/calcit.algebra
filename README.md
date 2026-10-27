@@ -4,9 +4,10 @@ Typed Maybe operations for exploring algebraic composition.
 
 ## 使用者影响
 
-0.0.17 候选将 Calcit / `@calcit/procs` 从 0.30.1-alpha.5 配对到正式 0.30.1，消费者需同步工具链，不单独升级一端。
-Maybe 的泛型关系、nominal 构造器和兼容 `%maybe` wrapper 保持不变，源码和测试
-无需改写。`.bind` 是本库 `MaybeTrait` 方法，不是待迁移的 core 别名。
+0.0.18 候选将 Calcit / `@calcit/procs` 从正式 0.30.1 配对到正式 0.31.0，消费者需同步工具链，不单独升级一端。
+Maybe 的泛型关系、nominal 构造器和兼容 `%maybe` wrapper 保持不变，库实现和原测试断言
+无需改写。匹配示例 `algebra.test/match-pet-1` 现在声明真实的
+`animal-class -> PetMatch` 合同；任意 Enum 不再作为受检输入，实际使用这些名义构造器的原调用不变。`.bind` 是本库 `MaybeTrait` 方法，不是待迁移的 core 别名。
 本库没有前端资源、服务端部署或 COS/CDN 配置；发布状态以 GitHub Releases 为准。
 
 ## Usage
@@ -42,7 +43,7 @@ retired; current enum/match examples are exercised in `algebra.test/test-match`.
 
 ## Development
 
-开发工具链使用已完整发布配对的 Calcit / `@calcit/procs` 0.30.1、Node 24 和 Yarn
+开发工具链使用已完整发布配对的 Calcit / `@calcit/procs` 0.31.0、Node 24 和 Yarn
 4.18.0（node-modules linker）。移除旧运行时版本的安装年龄例外，
 使用全局安全默认配置，不额外增加放行项。
 
@@ -71,7 +72,7 @@ Maybe and enum-matching suites,
 with `--require-match` preventing an empty test selection. The accepted quality baseline is retired:
 the only Dynamic position is the semantic result of the phase-aware
 `in-rust:` test macro. No unresolved type slots or unsafe coercions are added.
-Module `0.0.17` is prepared for a formal release after CI and review; no compiler
+Module `0.0.18` is prepared for a formal release after CI and review; no compiler
 build or hash dependency is required. The formal CLI/runtime pair is checked in CI; an older locally installed CLI is not equivalent acceptance. This library has no
 frontend assets, so COS/CDN configuration is not applicable.
 
@@ -80,7 +81,10 @@ result instead of returning an input with a different payload type parameter.
 The numeric callbacks in the existing assertions declare their actual input
 and result contracts. The empty input to numeric `apply` explicitly selects
 `Maybe0<Number>`; this checks an empty constructor, not an open-value cast.
-The pet-matching example accepts its actual nominal `animal-class` input.
+Both pet-matching examples accept their actual nominal `animal-class` input.
+`match-pet-1` returns the existing nominal `PetMatch`; its matching body and fallback are unchanged.
+This fixes the 0.31 independent-argument-proof diagnostic at the example boundary without
+turning raw payloads into trusted fields through a return declaration, cast or wider Dynamic.
 
 ## License
 

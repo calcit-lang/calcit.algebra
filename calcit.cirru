@@ -200,8 +200,8 @@
               (:horse name) (PetMatch :horse name)
               _ $ PetMatch :unknown |unknown
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Enum)
-            :args $ [] 'Enum
+          :schema $ :: 'Fn $ {} (:return 'algebra.test/PetMatch)
+            :args $ [] 'algebra.test/animal-class
         'match-pet-2 $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn match-pet-2 (pet)
             match pet
