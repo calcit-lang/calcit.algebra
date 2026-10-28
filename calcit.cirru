@@ -20,10 +20,9 @@
                 raise "|Maybe0:some expects one payload"
               _ $ raise |unknown-maybe-variant
           :examples $ []
-          :schema $ :: 'Fn $ {} (:rest 'T)
-            :args $ [] 'Tag
-            :generics $ [] 'T
-            :return $ :: 'algebra.maybe/Maybe0 'T
+          :schema $ quote $ Fn Tag & T
+            -> $ algebra.maybe/Maybe0 T
+            :generics T
           :tests $ [] $ %{} 'TestEntry (:name |compatibility-construction)
             :code $ quote $ do
               assert= (maybe-class :none) (%maybe :none)
@@ -32,7 +31,7 @@
         '%maybe-impl $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defimpl %maybe-impl MaybeTrait (.map &map-maybe) (.bind &bind-maybe) (.apply &apply-maybe) (.alt &alt-maybe)
           :examples $ []
-          :schema $ :: 'Impl
+          :schema $ quote Impl
         '&alt-maybe $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn &alt-maybe (self other)
             match self
@@ -44,10 +43,9 @@
               (:some _x) self
               _ $ raise $ str-spaced "|unkown self:" self
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] (:: 'algebra.maybe/Maybe0 'T) (:: 'algebra.maybe/Maybe0 'T)
-            :generics $ [] 'T
-            :return $ :: 'algebra.maybe/Maybe0 'T
+          :schema $ quote $ Fn (algebra.maybe/Maybe0 T) (algebra.maybe/Maybe0 T)
+            -> $ algebra.maybe/Maybe0 T
+            :generics T
         '&apply-maybe $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn &apply-maybe (self mf)
             match self
@@ -60,12 +58,10 @@
                   _ $ raise $ str-spaced "|unknown mf" mf
               _ $ raise $ str-spaced "|unkown data" self
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
-              :: 'algebra.maybe/Maybe0 $ :: 'Fn $ {} (:return 'U)
-                :args $ [] 'T
-            :generics $ [] 'T 'U
-            :return $ :: 'algebra.maybe/Maybe0 'U
+          :schema $ quote $ Fn (algebra.maybe/Maybe0 T)
+            algebra.maybe/Maybe0 $ Fn T $ -> U
+            -> $ algebra.maybe/Maybe0 U
+            :generics T U
         '&bind-maybe $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn &bind-maybe (self fm)
             match self
@@ -73,13 +69,10 @@
               (:some x) (fm x)
               _ $ raise $ str "|unknown " self
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
-              :: 'Fn $ {}
-                :args $ [] 'T
-                :return $ :: 'algebra.maybe/Maybe0 'U
-            :generics $ [] 'T 'U
-            :return $ :: 'algebra.maybe/Maybe0 'U
+          :schema $ quote $ Fn (algebra.maybe/Maybe0 T)
+            Fn T $ -> $ algebra.maybe/Maybe0 U
+            -> $ algebra.maybe/Maybe0 U
+            :generics T U
         '&map-maybe $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn &map-maybe (self f)
             match self
@@ -88,82 +81,72 @@
                 maybe-class :some $ f x
               _ $ raise $ str "|invalid case" self
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
-              :: 'Fn $ {} (:return 'U)
-                :args $ [] 'T
-            :generics $ [] 'T 'U
-            :return $ :: 'algebra.maybe/Maybe0 'U
+          :schema $ quote $ Fn (algebra.maybe/Maybe0 T)
+            Fn T $ -> U
+            -> $ algebra.maybe/Maybe0 U
+            :generics T U
         'Maybe0 $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defenum Maybe0 ([] 'T) (:none) (:some 'T)
           :examples $ []
-          :schema $ :: 'EnumDef
+          :schema $ quote EnumDef
         'MaybeTrait $ %{} 'CodeEntry (:doc |)
           :code $ quote $ deftrait MaybeTrait
-            .map $ :: 'Fn $ {} (:kind :fn)
+            .map $ :: 'Fn $ {} (:kind 'Fn)
               :args $ [] (:: 'algebra.maybe/Maybe0 'T)
                 :: 'Fn $ {} (:return 'U)
                   :args $ [] 'T
               :generics $ [] 'T 'U
               :return $ :: 'algebra.maybe/Maybe0 'U
-            .bind $ :: 'Fn $ {} (:kind :fn)
+            .bind $ :: 'Fn $ {} (:kind 'Fn)
               :args $ [] (:: 'algebra.maybe/Maybe0 'T)
                 :: 'Fn $ {}
                   :args $ [] 'T
                   :return $ :: 'algebra.maybe/Maybe0 'U
               :generics $ [] 'T 'U
               :return $ :: 'algebra.maybe/Maybe0 'U
-            .apply $ :: 'Fn $ {} (:kind :fn)
+            .apply $ :: 'Fn $ {} (:kind 'Fn)
               :args $ [] (:: 'algebra.maybe/Maybe0 'T)
                 :: 'algebra.maybe/Maybe0 $ :: 'Fn $ {} (:return 'U)
                   :args $ [] 'T
               :generics $ [] 'T 'U
               :return $ :: 'algebra.maybe/Maybe0 'U
-            .alt $ :: 'Fn $ {} (:kind :fn)
+            .alt $ :: 'Fn $ {} (:kind 'Fn)
               :args $ [] (:: 'algebra.maybe/Maybe0 'T) (:: 'algebra.maybe/Maybe0 'T)
               :generics $ [] 'T
               :return $ :: 'algebra.maybe/Maybe0 'T
           :examples $ []
-          :schema $ :: 'Trait
+          :schema $ quote Trait
         'maybe-class $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def maybe-class (impl-traits Maybe0 %maybe-impl)
           :examples $ []
-          :schema $ :: 'EnumDef
+          :schema $ quote EnumDef
         'maybe:alt $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn maybe:alt (self other) (&alt-maybe self other)
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] (:: 'algebra.maybe/Maybe0 'T) (:: 'algebra.maybe/Maybe0 'T)
-            :generics $ [] 'T
-            :return $ :: 'algebra.maybe/Maybe0 'T
+          :schema $ quote $ Fn (algebra.maybe/Maybe0 T) (algebra.maybe/Maybe0 T)
+            -> $ algebra.maybe/Maybe0 T
+            :generics T
         'maybe:apply $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn maybe:apply (self mf) (&apply-maybe self mf)
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
-              :: 'algebra.maybe/Maybe0 $ :: 'Fn $ {} (:return 'U)
-                :args $ [] 'T
-            :generics $ [] 'T 'U
-            :return $ :: 'algebra.maybe/Maybe0 'U
+          :schema $ quote $ Fn (algebra.maybe/Maybe0 T)
+            algebra.maybe/Maybe0 $ Fn T $ -> U
+            -> $ algebra.maybe/Maybe0 U
+            :generics T U
         'maybe:bind $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn maybe:bind (self f) (&bind-maybe self f)
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
-              :: 'Fn $ {}
-                :args $ [] 'T
-                :return $ :: 'algebra.maybe/Maybe0 'U
-            :generics $ [] 'T 'U
-            :return $ :: 'algebra.maybe/Maybe0 'U
+          :schema $ quote $ Fn (algebra.maybe/Maybe0 T)
+            Fn T $ -> $ algebra.maybe/Maybe0 U
+            -> $ algebra.maybe/Maybe0 U
+            :generics T U
         'maybe:map $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn maybe:map (self f) (&map-maybe self f)
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] (:: 'algebra.maybe/Maybe0 'T)
-              :: 'Fn $ {} (:return 'U)
-                :args $ [] 'T
-            :generics $ [] 'T 'U
-            :return $ :: 'algebra.maybe/Maybe0 'U
+          :schema $ quote $ Fn (algebra.maybe/Maybe0 T)
+            Fn T $ -> U
+            -> $ algebra.maybe/Maybe0 U
+            :generics T U
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns algebra.maybe
     'algebra.test $ %{} 'FileEntry
@@ -171,26 +154,23 @@
         'PetMatch $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defenum PetMatch (:cat 'String 'String 'Number 'Number) (:dog 'String 'String 'Number) (:bird 'String 'String 'String) (:horse 'String) (:unknown 'String)
           :examples $ []
-          :schema $ :: 'EnumDef
+          :schema $ quote EnumDef
         'animal-class $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defenum animal-class (:cat 'String 'String 'Number 'Number) (:dog 'String 'String 'Number) (:bird 'String 'String 'String) (:horse 'String)
           :examples $ []
-          :schema $ :: 'EnumDef
+          :schema $ quote EnumDef
         'in-rust: $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defmacro in-rust: (code)
             if
               = :eval $ &get-calcit-running-mode
               , code $ quote $ println "|js... skip..."
           :examples $ []
-          :schema $ :: 'Macro $ {}
-            :capabilities $ #{}
-            :expansion $ :: 'Expr 'Dynamic
-            :required $ [] 'Syntax
+          :schema $ quote $ Macro Syntax
+            -> $ Expr Dynamic
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! () (run-tests)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
+          :schema $ quote $ Fn (-> Unit)
         'match-pet-1 $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn match-pet-1 (pet)
             match pet
@@ -200,27 +180,23 @@
               (:horse name) (PetMatch :horse name)
               _ $ PetMatch :unknown |unknown
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'algebra.test/PetMatch)
-            :args $ [] 'algebra.test/animal-class
+          :schema $ quote $ Fn algebra.test/animal-class (-> algebra.test/PetMatch)
         'match-pet-2 $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn match-pet-2 (pet)
             match pet
               (:cat name color age break-times) ([] |Cat name)
               _ $ [] "|not cat"
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] 'algebra.test/animal-class
-            :return $ :: 'List 'String
+          :schema $ quote $ Fn algebra.test/animal-class
+            -> $ List String
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () (run-tests)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
+          :schema $ quote $ Fn (-> Unit)
         'run-tests $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn run-tests () (test-maybe) (test-match)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
+          :schema $ quote $ Fn (-> Unit)
         'test-match $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn test-match () |example-1
             is $ =
@@ -239,8 +215,7 @@
                     match-pet-2 $ animal-class :dog |Dou |orange 6
                     [] "|not cat"
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
+          :schema $ quote $ Fn (-> Unit)
           :tests $ [] $ %{} 'TestEntry (:name |enum-matching)
             :code $ quote $ test-match
             :tags $ #{} :unit
@@ -254,23 +229,20 @@
               is $ = (algebra.maybe/maybe-class :some 2)
                 maybe:bind (algebra.maybe/maybe-class :some 1)
                   fn (x)
-                    hint-fn $ {}
-                      :args $ [] 'Number
-                      :return $ :: 'algebra.maybe/Maybe0 'Number
+                    hint-fn $ Fn Number $ -> (algebra.maybe/Maybe0 Number)
                     algebra.maybe/maybe-class :some $ inc x
               is $ = (algebra.maybe/maybe-class :none)
                 maybe:bind (algebra.maybe/maybe-class :none)
                   fn (x)
-                    hint-fn $ {}
-                      :args $ [] 'Number
-                      :return $ :: 'algebra.maybe/Maybe0 'Number
+                    hint-fn $ Fn Number $ -> (algebra.maybe/Maybe0 Number)
                     algebra.maybe/maybe-class :some $ inc x
               , |apply
                 is $ = (algebra.maybe/maybe-class :some 2)
                   maybe:apply (algebra.maybe/maybe-class :some 1) (algebra.maybe/maybe-class :some inc)
                 is $ = (algebra.maybe/maybe-class :none)
                   maybe:apply
-                    assert-type (algebra.maybe/maybe-class :none) (:: 'algebra.maybe/Maybe0 'Number)
+                    assert-type (algebra.maybe/maybe-class :none)
+                      quote $ algebra.maybe/Maybe0 Number
                     algebra.maybe/maybe-class :some inc
                 is $ = (algebra.maybe/maybe-class :none)
                   maybe:apply (algebra.maybe/maybe-class :some 1) (algebra.maybe/maybe-class :none)
@@ -284,8 +256,7 @@
                   is $ = (algebra.maybe/maybe-class :none)
                     maybe:alt (algebra.maybe/maybe-class :none) (algebra.maybe/maybe-class :none)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
+          :schema $ quote $ Fn (-> Unit)
           :tests $ [] $ %{} 'TestEntry (:name |maybe-operations)
             :code $ quote $ test-maybe
             :tags $ #{} :unit
