@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@calcit/procs": "0.32.0"
+    "@calcit/procs": "0.32.1"
   },
   "scripts": {
     "try-js": "mode=ci calcit calcit.cirru js && mode=ci node ./main.mjs",
