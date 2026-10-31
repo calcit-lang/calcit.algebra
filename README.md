@@ -44,7 +44,7 @@ retired; current enum/match examples are exercised in `algebra.test/test-match`.
 ## Development
 
 开发工具链使用已完整发布配对的 Calcit / `@calcit/procs` 0.32.1、Node 24 和 Yarn
-4.18.0（node-modules linker）。npm 新解析版本等待 60 分钟，无单包豁免；
+4.18.0（node-modules linker）。新解析出的 npm 包版本必须已发布至少 60 分钟；本仓库未配置单包豁免；
 已有 immutable 锁版本不重新计算等待时间。
 
 ```bash
