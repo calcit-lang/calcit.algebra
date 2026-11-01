@@ -86,7 +86,7 @@
             -> $ algebra.maybe/Maybe0 U
             :generics T U
         'Maybe0 $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defenum Maybe0 ([] 'T) (:none) (:some 'T)
+          :code $ quote $ defenum Maybe0 ([] T) (:none) (:some T)
           :examples $ []
           :schema $ quote EnumDef
         'MaybeTrait $ %{} 'CodeEntry (:doc |)
@@ -152,11 +152,11 @@
     'algebra.test $ %{} 'FileEntry
       :defs $ {}
         'PetMatch $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defenum PetMatch (:cat 'String 'String 'Number 'Number) (:dog 'String 'String 'Number) (:bird 'String 'String 'String) (:horse 'String) (:unknown 'String)
+          :code $ quote $ defenum PetMatch (:cat String String Number Number) (:dog String String Number) (:bird String String String) (:horse String) (:unknown String)
           :examples $ []
           :schema $ quote EnumDef
         'animal-class $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defenum animal-class (:cat 'String 'String 'Number 'Number) (:dog 'String 'String 'Number) (:bird 'String 'String 'String) (:horse 'String)
+          :code $ quote $ defenum animal-class (:cat String String Number Number) (:dog String String Number) (:bird String String String) (:horse String)
           :examples $ []
           :schema $ quote EnumDef
         'in-rust: $ %{} 'CodeEntry (:doc |)
