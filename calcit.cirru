@@ -241,8 +241,7 @@
                   maybe:apply (algebra.maybe/maybe-class :some 1) (algebra.maybe/maybe-class :some inc)
                 is $ = (algebra.maybe/maybe-class :none)
                   maybe:apply
-                    assert-type (algebra.maybe/maybe-class :none)
-                      quote $ algebra.maybe/Maybe0 Number
+                    assert-type (algebra.maybe/maybe-class :none) (algebra.maybe/Maybe0 Number)
                     algebra.maybe/maybe-class :some inc
                 is $ = (algebra.maybe/maybe-class :none)
                   maybe:apply (algebra.maybe/maybe-class :some 1) (algebra.maybe/maybe-class :none)
