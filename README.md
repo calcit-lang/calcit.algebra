@@ -4,8 +4,8 @@ Typed Maybe operations for exploring algebraic composition.
 
 ## 使用者影响
 
-本轮候选 Git 模块 **0.0.21** 配对正式 Calcit CLI / `@calcit/procs` **0.34.2**；开发者需同步工具链并重新生成 JS，正式 tag 发布前不要引用候选。已发布的 0.0.19 tag 保留在原提交，不移动历史版本。
-Maybe 的泛型关系、nominal 构造器和兼容 `%maybe` wrapper 保持不变。本轮仅同步工具链和模块声明，Snapshot 字节不变，保留原 schema、测试断言、求值和失败语义。唯一 Dynamic 是按执行阶段返回任意输入表达式的宏展开合同，不能改写为有限 union；不添加 unsafe 或质量预算。
+本轮候选 Git 模块 **0.0.22** 配对正式 Calcit CLI / `@calcit/procs` **0.35.1**；开发者需同步工具链并重新生成 JS，正式 tag 发布前不要引用候选。已发布的 0.0.19 tag 保留在原提交，不移动历史版本。
+Maybe 的泛型关系、nominal 构造器和兼容 `%maybe` wrapper 保持不变。本轮仅同步工具链和模块声明，`calcit.cirru` 中一处 `assert-type` 改为 0.35.1 的规范格式，保留原 schema、测试断言、求值和失败语义。唯一 Dynamic 是按执行阶段返回任意输入表达式的宏展开合同，不能改写为有限 union；不添加 unsafe 或质量预算。
 匹配示例 `algebra.test/match-pet-1` 保留此前已声明的真实
 `animal-class -> PetMatch` 合同；任意 Enum 不再作为受检输入，实际使用这些名义构造器的原调用不变。`.bind` 是本库 `MaybeTrait` 方法，不是待迁移的 core 别名。
 本库没有前端资源、服务端部署或 COS/CDN 配置；发布状态以正式 Git tag 为准；0.0.19 已发布，不移动历史 tag。
@@ -43,7 +43,7 @@ retired; current enum/match examples are exercised in `algebra.test/test-match`.
 
 ## Development
 
-开发工具链使用已完整发布配对的 Calcit / `@calcit/procs` 0.34.2、Node 24 和 Yarn
+开发工具链使用已完整发布配对的 Calcit / `@calcit/procs` 0.35.1、Node 24 和 Yarn
 4.18.0（node-modules linker）。新解析出的 npm 包版本必须已发布至少 60 分钟；本仓库未配置单包豁免；
 已有 immutable 锁版本不重新计算等待时间。
 
@@ -72,8 +72,8 @@ Maybe and enum-matching suites,
 with `--require-match` preventing an empty test selection. The accepted quality baseline is retired:
 the only Dynamic position is the semantic result of the phase-aware
 `in-rust:` test macro. No unresolved type slots or unsafe coercions are added.
-Module `0.0.19` remains released for its original pair; candidate `0.0.21` targets
-the official 0.34.2 pair and its publication is determined by the formal Git tag. No compiler build or hash dependency is required. The formal CLI/runtime pair is checked in CI; an older locally installed CLI is not equivalent acceptance. This library has no
+Module `0.0.19` remains released for its original pair; candidate `0.0.22` targets
+the official 0.35.1 pair and its publication is determined by the formal Git tag. No compiler build or hash dependency is required. The formal CLI/runtime pair is checked in CI; an older locally installed CLI is not equivalent acceptance. This library has no
 frontend assets, so COS/CDN configuration is not applicable.
 
 Generic `map`, `bind`, and `apply` construct a fresh payload-free `:none`
