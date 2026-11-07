@@ -194,7 +194,12 @@
           :examples $ []
           :schema $ quote $ Fn (-> Unit)
         'run-tests $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn run-tests () (test-maybe) (test-match)
+          :code $ quote $ defn run-tests ()
+            assert= (maybe-class :none) (%maybe :none)
+            assert= (maybe-class :some |text)
+              assert-type (%maybe :some |text) (algebra.maybe/Maybe0 String)
+            test-maybe
+            test-match
           :examples $ []
           :schema $ quote $ Fn (-> Unit)
         'test-match $ %{} 'CodeEntry (:doc |)
