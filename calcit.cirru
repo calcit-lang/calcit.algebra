@@ -20,7 +20,7 @@
                 raise "|Maybe0:some expects one payload"
               _ $ raise |unknown-maybe-variant
           :examples $ []
-          :schema $ quote $ Fn Tag & T
+          :schema $ quote $ Fn Tag (& T)
             -> $ algebra.maybe/Maybe0 T
             :generics T
           :tests $ [] $ %{} 'TestEntry (:name |compatibility-construction)
