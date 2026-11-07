@@ -27,6 +27,8 @@
             :code $ quote $ do
               assert= (maybe-class :none) (%maybe :none)
               assert= (maybe-class :some 1) (%maybe :some 1)
+              assert= (maybe-class :some |text)
+                assert-type (%maybe :some |text) (algebra.maybe/Maybe0 String)
             :tags $ #{} :unit
         '%maybe-impl $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defimpl %maybe-impl MaybeTrait (.map &map-maybe) (.bind &bind-maybe) (.apply &apply-maybe) (.alt &alt-maybe)
