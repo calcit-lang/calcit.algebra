@@ -20,13 +20,15 @@
                 raise "|Maybe0:some expects one payload"
               _ $ raise |unknown-maybe-variant
           :examples $ []
-          :schema $ quote $ Fn Tag & T
+          :schema $ quote $ Fn Tag (& T)
             -> $ algebra.maybe/Maybe0 T
             :generics T
           :tests $ [] $ %{} 'TestEntry (:name |compatibility-construction)
             :code $ quote $ do
               assert= (maybe-class :none) (%maybe :none)
               assert= (maybe-class :some 1) (%maybe :some 1)
+              assert= (maybe-class :some |text)
+                assert-type (%maybe :some |text) (algebra.maybe/Maybe0 String)
             :tags $ #{} :unit
         '%maybe-impl $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defimpl %maybe-impl MaybeTrait (.map &map-maybe) (.bind &bind-maybe) (.apply &apply-maybe) (.alt &alt-maybe)
@@ -194,7 +196,12 @@
           :examples $ []
           :schema $ quote $ Fn (-> Unit)
         'run-tests $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn run-tests () (test-maybe) (test-match)
+          :code $ quote $ defn run-tests ()
+            assert= (maybe-class :none) (%maybe :none)
+            assert= (maybe-class :some |text)
+              assert-type (%maybe :some |text) (algebra.maybe/Maybe0 String)
+            test-maybe
+            test-match
           :examples $ []
           :schema $ quote $ Fn (-> Unit)
         'test-match $ %{} 'CodeEntry (:doc |)
