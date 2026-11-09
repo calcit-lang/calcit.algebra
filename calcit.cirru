@@ -161,14 +161,6 @@
           :code $ quote $ defenum animal-class (:cat String String Number Number) (:dog String String Number) (:bird String String String) (:horse String)
           :examples $ []
           :schema $ quote EnumDef
-        'in-rust: $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defmacro in-rust: (code)
-            if
-              = :eval $ &get-calcit-running-mode
-              , code $ quote $ println "|js... skip..."
-          :examples $ []
-          :schema $ quote $ Macro Syntax
-            -> $ Expr Dynamic
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! () (run-tests)
           :examples $ []
