@@ -245,6 +245,20 @@
                     maybe:alt (algebra.maybe/maybe-class :none) (algebra.maybe/maybe-class :some 2)
                   is $ = (algebra.maybe/maybe-class :none)
                     maybe:alt (algebra.maybe/maybe-class :none) (algebra.maybe/maybe-class :none)
+                  let
+                      value $ maybe-class :some 1
+                      mapped $ .map value $ fn (x)
+                        hint-fn $ Fn Number $ -> String
+                        str x
+                    assert= (maybe-class :some |1)
+                      assert-type mapped $ algebra.maybe/Maybe0 String
+                    assert= (maybe-class :some 2)
+                      .bind value $ fn (x)
+                        hint-fn $ Fn Number $ -> (algebra.maybe/Maybe0 Number)
+                        maybe-class :some $ inc x
+                    assert= (maybe-class :some 2)
+                      .apply value $ maybe-class :some inc
+                    assert= value $ .alt value $ maybe-class :some 2
           :examples $ []
           :schema $ quote $ Fn (-> Unit)
           :tests $ [] $ %{} 'TestEntry (:name |maybe-operations)
