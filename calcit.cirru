@@ -93,29 +93,21 @@
           :schema $ quote EnumDef
         'MaybeTrait $ %{} 'CodeEntry (:doc |)
           :code $ quote $ deftrait MaybeTrait
-            .map $ :: 'Fn $ {} (:kind 'Fn)
-              :args $ [] (:: 'algebra.maybe/Maybe0 'T)
-                :: 'Fn $ {} (:return 'U)
-                  :args $ [] 'T
-              :generics $ [] 'T 'U
-              :return $ :: 'algebra.maybe/Maybe0 'U
-            .bind $ :: 'Fn $ {} (:kind 'Fn)
-              :args $ [] (:: 'algebra.maybe/Maybe0 'T)
-                :: 'Fn $ {}
-                  :args $ [] 'T
-                  :return $ :: 'algebra.maybe/Maybe0 'U
-              :generics $ [] 'T 'U
-              :return $ :: 'algebra.maybe/Maybe0 'U
-            .apply $ :: 'Fn $ {} (:kind 'Fn)
-              :args $ [] (:: 'algebra.maybe/Maybe0 'T)
-                :: 'algebra.maybe/Maybe0 $ :: 'Fn $ {} (:return 'U)
-                  :args $ [] 'T
-              :generics $ [] 'T 'U
-              :return $ :: 'algebra.maybe/Maybe0 'U
-            .alt $ :: 'Fn $ {} (:kind 'Fn)
-              :args $ [] (:: 'algebra.maybe/Maybe0 'T) (:: 'algebra.maybe/Maybe0 'T)
-              :generics $ [] 'T
-              :return $ :: 'algebra.maybe/Maybe0 'T
+            .map $ Fn (algebra.maybe/Maybe0 T)
+              Fn T $ -> U
+              -> $ algebra.maybe/Maybe0 U
+              :generics T U
+            .bind $ Fn (algebra.maybe/Maybe0 T)
+              Fn T $ -> $ algebra.maybe/Maybe0 U
+              -> $ algebra.maybe/Maybe0 U
+              :generics T U
+            .apply $ Fn (algebra.maybe/Maybe0 T)
+              algebra.maybe/Maybe0 $ Fn T $ -> U
+              -> $ algebra.maybe/Maybe0 U
+              :generics T U
+            .alt $ Fn (algebra.maybe/Maybe0 T) (algebra.maybe/Maybe0 T)
+              -> $ algebra.maybe/Maybe0 T
+              :generics T
           :examples $ []
           :schema $ quote Trait
         'maybe-class $ %{} 'CodeEntry (:doc |)
