@@ -28,7 +28,7 @@
               assert= (maybe-class :none) (%maybe :none)
               assert= (maybe-class :some 1) (%maybe :some 1)
               assert= (maybe-class :some |text)
-                assert-type (%maybe :some |text) (algebra.maybe/Maybe0 String)
+                assert-type (%maybe :some |text) (Maybe0 String)
             :tags $ #{} :unit
         '%maybe-impl $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defimpl %maybe-impl MaybeTrait (.map &map-maybe) (.bind &bind-maybe) (.apply &apply-maybe) (.alt &alt-maybe)
@@ -88,7 +88,7 @@
             -> $ Maybe0 U
             :generics T U
         'Maybe0 $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defenum Maybe0 ([] T) (:none) (:some T)
+          :code $ quote $ defenum Maybe0 (:generics T) (:none) (:some T)
           :examples $ []
           :schema $ quote EnumDef
         'MaybeTrait $ %{} 'CodeEntry (:doc |)
