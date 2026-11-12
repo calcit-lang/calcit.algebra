@@ -4,7 +4,7 @@ Typed Maybe operations for exploring algebraic composition.
 
 ## 使用者影响
 
-本项目使用正式 Calcit CLI / `@calcit/procs` **0.41.1**。升级后请同步工具链并重新生成 JS。
+本项目使用正式 Calcit CLI / `@calcit/procs` **0.42.1**。升级后请同步工具链并重新生成 JS。
 Maybe 的泛型操作、名义构造器和兼容入口 `%maybe` 继续适用。
 
 ## Usage
@@ -40,7 +40,7 @@ retired; current enum/match examples are exercised in `algebra.test/test-match`.
 
 ## Development
 
-开发工具链使用已完整发布配对的 Calcit / `@calcit/procs` 0.41.1、Node 24 和 Yarn
+开发工具链使用已完整发布配对的 Calcit / `@calcit/procs` 0.42.1、Node 24 和 Yarn
 4.18.0（node-modules linker）。新解析出的 npm 包版本必须已发布至少 60 分钟；本仓库未配置单包豁免；
 已有 immutable 锁版本不重新计算等待时间。
 
